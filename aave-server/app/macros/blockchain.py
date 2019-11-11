@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from coinmarketcap.clients import CoinMarketCapClient
 from ens.utils import to_utc_datetime
 
 from aave import get_currency_from_address
@@ -15,8 +16,10 @@ def hexbytes_to_string(hexbytes):
     return "".join(["{:02X}".format(b) for b in hexbytes])
 
 
-def wei_to_ether(wei):
-    return wei / ETHER
+def wei_to_ether(wei, currency):
+    lng = currency['decimals']
+    div = '1' + ('0' * (lng-1))
+    return wei / int(div)
 
 
 def wei_to_gwei(wei):
@@ -32,11 +35,19 @@ def gwei_to_wei(wei):
 
 
 def event_to_point(transaction):
+    client = CoinMarketCapClient()
     print(transaction)
-    amount = {} if transaction['args'].get('_amount', None) is None else {
-        '_amount': wei_to_ether(transaction['args']['_amount']),
-        'amount': str(transaction['args']['_amount'])
-    }
+    amount = {}
+    if transaction['args'].get('_amount', None) is not None:
+        _amount = wei_to_ether(transaction['args']['_amount'],
+                               get_currency_from_address(transaction['args']['_reserve']))
+        _id = get_currency_from_address(transaction['args']['_reserve'])
+        usd = client.cryptocoin.get(coin_id=_id)['quotes']['USD']['price']
+        amount = {
+            '_amount': _amount,
+            'amount': str(transaction['args']['_amount']),
+            'usd': _amount * usd,
+        }
 
     reserve =  {
         'currency': get_currency_from_address(transaction['args']['_reserve'])['name'],
@@ -49,11 +60,13 @@ def event_to_point(transaction):
         'reserve': transaction['args']['_reserve']
     }
     time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z') if transaction['args'].get('timestamp', None) is None else date_str_from_transaction(transaction)
+    user = {} if transaction['args'].get('_user', None) is None else {'user': transaction['args']['_user']}
 
     return {
         "measurement": transaction['event'],
         "tags": {
             'address': transaction['address'],
+            **user,
             **reserve_tag
         },
         "time": time,

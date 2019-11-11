@@ -16,98 +16,114 @@ RESERVES = {
     '0x3F80c39c0b96A0945f9F0E9f55d8A8891c5671A8': {
         'address': '0x3F80c39c0b96A0945f9F0E9f55d8A8891c5671A8',
         'name': 'Kyber Network ',
-        'decimals': '',
-        'symbol': 'KNC'
+        'decimals': 18,
+        'symbol': 'KNC',
+        'id': 1982
     },
     '0x260071C8D61DAf730758f8BD0d6370353956AE0E': {
         'address': '0x260071C8D61DAf730758f8BD0d6370353956AE0E',
         'name': 'Augur',
-        'decimals': '',
-        'symbol': 'REP'
+        'decimals': 18,
+        'symbol': 'REP',
+        'id': 1104
     },
     '0x61e4CAE3DA7FD189e52a4879C7B8067D7C2Cc0FA': {
         'address': '0x61e4CAE3DA7FD189e52a4879C7B8067D7C2Cc0FA',
         'name': 'Maker',
-        'decimals': '',
-        'symbol': 'MKR'
+        'decimals': 18,
+        'symbol': 'MKR',
+        'id': 1518
     },
     '0xD0d76886cF8D952ca26177EB7CfDf83bad08C00C': {
         'address': '0xD0d76886cF8D952ca26177EB7CfDf83bad08C00C',
         'name': '0x Coin',
-        'decimals': '',
-        'symbol': 'ZRX'
+        'decimals': 18,
+        'symbol': 'ZRX',
+        'id': 1896
     },
     '0x1BCe8A0757B7315b74bA1C7A731197295ca4747a': {
         'address': '0x1BCe8A0757B7315b74bA1C7A731197295ca4747a',
         'name': 'LEND',
-        'decimals': '',
-        'symbol': 'LEND'
+        'decimals': 18,
+        'symbol': 'LEND',
+        'id': 2239
     },
     '0x2d12186Fbb9f9a8C28B3FfdD4c42920f8539D738': {
         'address': '0x2d12186Fbb9f9a8C28B3FfdD4c42920f8539D738',
         'name': 'Basic Attention Token',
-        'decimals': '',
-        'symbol': 'BAT'
+        'decimals': 18,
+        'symbol': 'BAT',
+        'id': 1697
     },
     '0x1c4a937d171752e1313D70fb16Ae2ea02f86303e': {
         'address': '0x1c4a937d171752e1313D70fb16Ae2ea02f86303e',
         'name': 'TrueUSD',
-        'decimals': '',
-        'symbol': 'TUSD'
+        'decimals': 18,
+        'symbol': 'TUSD',
+        'id': 2563
     },
     '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD': {
         'address': '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD',
         'name': 'DAI',
-        'decimals': '',
-        'symbol': 'DAI'
+        'decimals': 18,
+        'symbol': 'DAI',
+        'id': 2308
     },
     '0xd2eC3a70EF3275459f5c7a1d5930E9024bA3c4f3': {
         'address': '0xd2eC3a70EF3275459f5c7a1d5930E9024bA3c4f3',
         'name': 'Ampleforth',
-        'decimals': '',
-        'symbol': 'AMPL'
+        'decimals': 18,
+        'symbol': 'AMPL',
+        'id': 4056
     },
     '0xe22da380ee6B445bb8273C81944ADEB6E8450422': {
         'address': '0xe22da380ee6B445bb8273C81944ADEB6E8450422',
         'name': 'USD Coin',
-        'decimals': '',
-        'symbol': 'USDC'
+        'decimals': 6,
+        'symbol': 'USDC',
+        'id': 3408
     },
     '0xD868790F57B39C9B2B51b12de046975f986675f9': {
         'address': '0xD868790F57B39C9B2B51b12de046975f986675f9',
         'name': 'Synthetix USD',
-        'decimals': '',
-        'symbol': 'SUSD'
+        'decimals': 6,
+        'symbol': 'SUSD',
+        'id': 2927
     },
     '0xAD5ce863aE3E4E9394Ab43d4ba0D80f419F61789': {
         'address': '0xAD5ce863aE3E4E9394Ab43d4ba0D80f419F61789',
         'name': 'ChainLink',
-        'decimals': '',
-        'symbol': 'LINK'
+        'decimals': 18,
+        'symbol': 'LINK',
+        'id': 1975
     },
     '0x13512979ADE267AB5100878E2e0f485B568328a4': {
         'address': '0x13512979ADE267AB5100878E2e0f485B568328a4',
         'name': 'USDT Coin',
-        'decimals': '',
-        'symbol': 'USDT'
+        'decimals': 6,
+        'symbol': 'USDT',
+        'id': 825
     },
     '0x3b92f58feD223E2cB1bCe4c286BD97e42f2A12EA': {
         'address': '0x3b92f58feD223E2cB1bCe4c286BD97e42f2A12EA',
         'name': 'WBTC Coin',
-        'decimals': '',
-        'symbol': 'WBTC'
+        'decimals': 18,
+        'symbol': 'WBTC',
+        'id': 3717
     },
     '0x804C0B38593796bD44126102C8b5e827Cf389D80': {
         'address': '0x804C0B38593796bD44126102C8b5e827Cf389D80',
         'name': 'Ethereum',
-        'decimals': '',
-        'symbol': 'ETH'
+        'decimals': 18,
+        'symbol': 'ETH',
+        'id': 1027
     },
     '0x738Dc6380157429e957d223e6333Dc385c85Fec7': {
         'address': '0x738Dc6380157429e957d223e6333Dc385c85Fec7',
         'name': 'Decentraland',
-        'decimals': '',
-        'symbol': 'MANA'
+        'decimals': 18,
+        'symbol': 'MANA',
+        'id': 1966
     },
 }
 

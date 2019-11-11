@@ -1,8 +1,6 @@
 from celery import Celery
 from os import environ
 
-from influxdb import InfluxDBClient
-
 from aave import get_connection, get_lending_pool_abi
 from aave.lending_pool import LendingPool
 from db import get_influx_instance
@@ -15,6 +13,34 @@ REDIS_DB = environ.get("QUEUE_REDIS_DB", "0")
 
 app = Celery("tasks", broker=f"redis://{REDIS_URI}:{REDIS_PORT}/{REDIS_DB}")
 client = get_influx_instance()
+
+
+@app.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    NETWORK_URL = environ.get('NETWORK_URL')
+    print('Scheduling task')
+    minute = 60.0
+    frequency = 1 * minute
+
+    sender.add_periodic_task(frequency, collect_deposits.s(network_url=NETWORK_URL),
+                             name='Collect deposits')
+    sender.add_periodic_task(frequency, collect_redeem_underlying.s(network_url=NETWORK_URL),
+                             name='Collect redeem underlying')
+    sender.add_periodic_task(frequency, collect_borrow.s(network_url=NETWORK_URL),
+                             name='Collect borrows')
+    sender.add_periodic_task(frequency, collect_repay.s(network_url=NETWORK_URL),
+                             name='collect repay')
+    sender.add_periodic_task(frequency, collect_liquidation_call.s(network_url=NETWORK_URL),
+                             name='Collect liquidations calls')
+    sender.add_periodic_task(frequency, collect_swap.s(network_url=NETWORK_URL),
+                             name='Collect swap')
+    sender.add_periodic_task(frequency, collect_flash_loan.s(network_url=NETWORK_URL),
+                             name='Collect flash loans')
+    sender.add_periodic_task(frequency, collect_reserve_used_as_collateral_enabled.s(network_url=NETWORK_URL),
+                             name='Collect reserve used as collateral enabled')
+    sender.add_periodic_task(frequency, collect_reserve_used_as_collateral_disabled.s(network_url=NETWORK_URL),
+                             name='Collect reserve used as collateral enabled')
+
 
 @app.task
 def run_task(*args, **kwargs):

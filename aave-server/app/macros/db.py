@@ -21,6 +21,7 @@ def get_wheres(args, attrs):
     return where
 
 def build_cond(serie, cond):
+    print(cond)
     if cond['type'] == 'gt':
         return getattr(serie, cond['key']) > cond['value']
     if cond['type'] == 'gte':

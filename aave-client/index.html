@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Aave monitoring</title>
+
+  <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+
+  </style>
+    </head>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo">Logo</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/">Home</a></li>
+        <li><a href="/users.html">Users</a></li>
+        <li><a href="/activity.html">Activity</a></li>
+        <li><a href="/flash_loans.html">Flash loans</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="/">Home</a></li>
+    <li><a href="/users.html">Users</a></li>
+    <li><a href="/activity">Activity</a></li>
+    <li><a href="/flash_loans.html">Flash Loans</a></li>
+  </ul>
+
+  <div class="row">
+    <div class="col s12 m3">
+      <div id="deposits" class="col s12">
+        <table id="total_deposits" class="responsive-table highlight striped">
+          <thead>
+            <th>Reserve</th>
+            <th>Amount</th>
+            <th>TX</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.js"></script>
+  <script>
+    var API_URL = 'http://localhost:8000/'
+    var options = {
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: false
+        },
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: [5, 7, 5],
+        curve: 'straight',
+        dashArray: [0, 8, 5]
+      },
+      series: [],
+      title: {
+        text: 'Page Statistics',
+        align: 'left'
+      },
+      markers: {
+        size: 0,
+
+        hover: {
+          sizeOffset: 6
+        }
+      },
+      xaxis: {
+        categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan',
+          '10 Jan', '11 Jan', '12 Jan'
+        ],
+      },
+      tooltip: {
+        y: [{
+          title: {
+            formatter: function (val) {
+              return val + " (mins)"
+            }
+          }
+        }, {
+          title: {
+            formatter: function (val) {
+              return val + " per session"
+            }
+          }
+        }, {
+          title: {
+            formatter: function (val) {
+              return val;
+            }
+          }
+        }]
+      },
+      grid: {
+        borderColor: '#f1f1f1',
+      }
+    }
+    M.AutoInit();
+
+
+    var instance = M.Tabs.init(document.getElementById('Tab'));
+
+
+    fetch(API_URL + 'lending/deposit', {headers: {'Access-Control-Allow-Origin': '*'}})
+            .then((resp) => resp.json()).then(function (data) {
+      series = [];
+      var chart = new ApexCharts(
+        document.querySelector("#deposits-activity"),
+        options
+      );
+
+      // chart.render()
+    }
+    );
+
+    fetch(API_URL + 'lending/deposit?order=desc&group=symbol&select=_amount__sum,symbol__last,symbol__count', {
+      headers: {'Access-Control-Allow-Origin': '*'}
+    }).then((resp) => resp.json()).then(function(data) {
+      console.log(data.data);
+      var records = data.data.map(function(item) {
+        return {
+          lastUpdated: item.time,
+          amount: item.sum,
+          reserve: item.last,
+          tx: item.count
+        }});
+      $('#total_deposits').dynatable({
+          dataset: {
+            records: records
+          }
+        });
+    });
+</script>
+
+</body>
+
+</html>
