@@ -1,4 +1,4 @@
-# Birdwatching
+# Watchbird
 This project requires Python, InfluxDB, Redis and static site server
 
 ## Install dependencies
