@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Aave monitoring</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    .dynatable-per-page {
+        display: none;
+    }
+    .dynatable-search {
+      width: 100%;
+    }
+    .dynatable-search input {
+      height: 2rem !important;
+    }
+  </style>
+
+    </head>
+</head>
+
+<body>
+  <nav class="teal darken-1">
+    <div class="container nav-wrapper">
+      <a href="#!" class="brand-logo">Aave Dash</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/">Home</a></li>
+        <li><a href="/users.html">Users</a></li>
+        <li><a href="/activity.html">Activity</a></li>
+        <li><a href="/flash_loans.html">Flash loans</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="/">Home</a></li>
+    <li><a href="/users.html">Users</a></li>
+    <li><a href="/activity">Activity</a></li>
+    <li><a href="/flash_loans.html">Flash Loans</a></li>
+  </ul>
+  <div>
+    <div class="row">
+    <div class="col s12">
+      <div id="users-section" class="col push-s1 s10">
+        <div class="card-panel">
+            <h4 id="address" class=""></h4>
+            <p class=" teal-text text-darken-4">Address</p>
+        </div>
+            <div class="row">
+    <div class="col s12">
+      <ul id="Tab" class="tabs">
+        <li class="tab col s2"><a class="active grey-text text-darken-4" href="#deposits">Deposits</a></li>
+        <li class="tab col s2"><a class=" grey-text text-darken-4" href="#redeem">Redeem</a></li>
+        <li class="tab col s2"><a class=" grey-text text-darken-4" href="#borrow">Borrow</a></li>
+        <li class="tab col s2"><a class=" grey-text text-darken-4" href="#swap">Swap</a></li>
+        <li class="tab col s2"><a class=" grey-text text-darken-4" href="#repay">Repay</a></li>
+      </ul>
+    </div>
+    <div id="deposits" class="col s12">
+        <table id="deposits-table" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>USD</th>
+            <th>Referral</th>
+            <th>Block Number</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
+    <div id="redeem" class="col s12">
+        <table id="redeem-table" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>USD</th>
+            <th>Referral</th>
+            <th>Block Number</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
+    <div id="borrow" class="col s12">
+        <table id="borrow-table" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>USD</th>
+            <th>Referral</th>
+            <th>Block Number</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
+    <div id="swap" class="col s12">
+        <table id="swap-table" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Currency</th>
+            <th>Block Number</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
+    <div id="repay" class="col s12">
+        <table id="repay-table" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Currency</th>
+            <th>Block Number</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+    </div>
+  </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.js"></script>
+  <script>
+    var API_URL = 'http://localhost:8000/'
+    var urlParams = new URLSearchParams(window.location.search);
+    var user = urlParams.get('user');
+     M.AutoInit();
+
+
+    var instance = M.Tabs.init(document.getElementById('Tab'));
+
+    $('#address').text(user);
+    fetch(API_URL + 'lending/user?user=' + user, {
+      headers: {'Access-Control-Allow-Origin': '*'}
+    }).then((resp) => resp.json()).then(function(data) {
+      console.log(data.redeem);
+
+
+      var deposits = data.deposits.map(function(item) {
+        return {
+          amount: item._amount,
+          referral: item._referral,
+          blockNumber: item.blockNumber,
+          date: moment(item.timestamp*1000).format("DD-MM-YYYY HH:mm:ss"),
+          currency: item.currency,
+          symbol: item.symbol,
+          usd: item.usd
+        }});
+
+      $('#deposits-table').dynatable({
+          dataset: {
+            records: deposits
+          }
+        });
+
+      var redeem = data.redeem.map(function(item) {
+        return {
+          amount: item._amount,
+          referral: item._referral,
+          blockNumber: item.blockNumber,
+          date: moment(item.timestamp*1000).format("DD-MM-YYYY HH:mm:ss"),
+          currency: item.currency,
+          symbol: item.symbol,
+          usd: item.usd
+        }});
+
+      $('#redeem-table').dynatable({
+          dataset: {
+            records: redeem
+          }
+        });
+
+      var borrow = data.borrow.map(function(item) {
+        return {
+          amount: item._amount,
+          referral: item._referral,
+          blockNumber: item.blockNumber,
+          date: moment(item.timestamp*1000).format("DD-MM-YYYY HH:mm:ss"),
+          currency: item.currency,
+          symbol: item.symbol,
+          usd: item.usd
+        }});
+
+      $('#borrow-table').dynatable({
+          dataset: {
+            records: borrow
+          }
+        });
+      var repay = data.repay.map(function(item) {
+        return {
+          amount: item._amount,
+          referral: item._referral,
+          blockNumber: item.blockNumber,
+          date: moment(item.timestamp*1000).format("DD-MM-YYYY HH:mm:ss"),
+          currency: item.currency,
+          symbol: item.symbol,
+          usd: item.usd
+        }});
+
+      $('#repay-table').dynatable({
+          dataset: {
+            records: repay
+          }
+        });
+      var swap = data.swap.map(function(item) {
+        return {
+          blockNumber: item.blockNumber,
+          date: moment(item.timestamp*1000).format("DD-MM-YYYY HH:mm:ss"),
+          currency: item.currency,
+          symbol: item.symbol,
+        }});
+
+      $('#swap-table').dynatable({
+          dataset: {
+            records: swap
+          }
+        });
+    });
+</script>
+
+</body>
+
+</html>

@@ -1,7 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from time import sleep
 
 from coinmarketcap.clients import CoinMarketCapClient
 from ens.utils import to_utc_datetime
+from requests import HTTPError
 
 from aave import get_currency_from_address
 
@@ -41,13 +43,32 @@ def event_to_point(transaction):
     if transaction['args'].get('_amount', None) is not None:
         _amount = wei_to_ether(transaction['args']['_amount'],
                                get_currency_from_address(transaction['args']['_reserve']))
-        _id = get_currency_from_address(transaction['args']['_reserve'])
-        usd = client.cryptocoin.get(coin_id=_id)['quotes']['USD']['price']
+        reserve = get_currency_from_address(transaction['args']['_reserve'])
+        usd = reserve.get('usd', False)
+        elapse = reserve.get('elapse', False)
+        expiration = datetime.now() - timedelta(hours=1)
+        if usd and elapse and elapse >= expiration:
+            print('The price is still valid')
+            usd = reserve['usd']
+        else:
+            _id = reserve['id']
+            try:
+                usd = 0 # client.cryptocoin.get(coin_id=_id)['quotes']['USD']['price']
+                reserve['usd'] = usd
+                reserve['elapse'] = datetime.now()
+                print('Waiting, web request sucess')
+            except HTTPError:
+                usd = 0
+                print('Ups, web request Failed')
+
+
+
         amount = {
             '_amount': _amount,
             'amount': str(transaction['args']['_amount']),
             'usd': _amount * usd,
         }
+
 
     reserve =  {
         'currency': get_currency_from_address(transaction['args']['_reserve'])['name'],

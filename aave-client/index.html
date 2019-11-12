@@ -7,24 +7,33 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Aave monitoring</title>
 
-  <!--Import Google Icon Font-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <!--Import materialize.css-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
-      <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
-
+    .dynatable-per-page {
+        display: none;
+    }
+    .dynatable-search {
+      width: 100%;
+    }
+    .dynatable-search input {
+      height: 2rem !important;
+    }
   </style>
+
     </head>
 </head>
 
 <body>
-  <nav>
-    <div class="nav-wrapper">
-      <a href="#!" class="brand-logo">Logo</a>
+  <nav class="teal darken-1">
+    <div class="container nav-wrapper">
+      <a href="#!" class="brand-logo">Aave Dash</a>
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
         <li><a href="/">Home</a></li>
@@ -41,14 +50,46 @@
     <li><a href="/activity">Activity</a></li>
     <li><a href="/flash_loans.html">Flash Loans</a></li>
   </ul>
-
   <div class="row">
-    <div class="col s12 m3">
+    <div class="col push-s1 s10">
+    <div class="col s12 m4">
       <div id="deposits" class="col s12">
-        <table id="total_deposits" class="responsive-table highlight striped">
+        <h3 class="center">Total Deposits</h3>
+        <table id="total_deposits" class="responsive-table centered highlight striped">
           <thead>
             <th>Reserve</th>
-            <th>Amount</th>
+            <th>Amount Token</th>
+            <th>Amount USD</th>
+            <th>TX</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div id="borrow" class="col s12">
+        <h3 class="center">Total Borrow</h3>
+        <table id="total_borrow" class="responsive-table centered highlight striped">
+          <thead>
+            <th>Reserve</th>
+            <th>Amount Token</th>
+            <th>Amount USD</th>
+            <th>TX</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div id="repay" class="col s12">
+        <h3 class="center">Total Repay</h3>
+        <table id="total_repay" class="responsive-table centered  highlight striped">
+          <thead>
+            <th>Reserve</th>
+            <th>Amount Token</th>
+            <th>Amount USD</th>
             <th>TX</th>
           </thead>
           <tbody>
@@ -57,7 +98,7 @@
       </div>
     </div>
   </div>
-
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
@@ -141,18 +182,57 @@
     }
     );
 
-    fetch(API_URL + 'lending/deposit?order=desc&group=symbol&select=_amount__sum,symbol__last,symbol__count', {
+    fetch(API_URL + 'lending/deposit?order=desc&group=symbol&select=_amount__sum,symbol__last,symbol__count,usd__sum', {
       headers: {'Access-Control-Allow-Origin': '*'}
     }).then((resp) => resp.json()).then(function(data) {
       console.log(data.data);
       var records = data.data.map(function(item) {
         return {
           lastUpdated: item.time,
-          amount: item.sum,
+          amountToken: item.sum,
+          amountUsd: item.sum_1,
           reserve: item.last,
           tx: item.count
         }});
       $('#total_deposits').dynatable({
+          dataset: {
+            records: records
+          }
+        });
+    });
+
+    fetch(API_URL + 'lending/borrow?order=desc&group=symbol&select=_amount__sum,symbol__last,symbol__count,usd__sum', {
+      headers: {'Access-Control-Allow-Origin': '*'}
+    }).then((resp) => resp.json()).then(function(data) {
+      console.log(data.data);
+      var records = data.data.map(function(item) {
+        return {
+          lastUpdated: item.time,
+          amountToken: item.sum,
+          amountUsd: item.sum_1,
+          reserve: item.last,
+          tx: item.count
+        }});
+      $('#total_borrow').dynatable({
+          dataset: {
+            records: records
+          }
+        });
+    });
+
+    fetch(API_URL + 'lending/repay?order=desc&group=symbol&select=_amount__sum,symbol__last,symbol__count,usd__sum', {
+      headers: {'Access-Control-Allow-Origin': '*'}
+    }).then((resp) => resp.json()).then(function(data) {
+      console.log(data.data);
+      var records = data.data.map(function(item) {
+        return {
+          lastUpdated: item.time,
+          amountToken: item.sum,
+          amountUsd: item.sum_1,
+          reserve: item.last,
+          tx: item.count
+        }});
+      $('#total_repay').dynatable({
           dataset: {
             records: records
           }
