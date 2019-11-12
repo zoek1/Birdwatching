@@ -35,3 +35,16 @@ python3 main.py
 ```
 python -m http.server 80
 ```
+### Home
+![](images/home.png)
+### Events
+![](images/events.png)
+### Users
+![](images/active_users.png)
+### User
+![](images/user.png)
+### Flash
+![](images/flash.png)
+
+## License
+See [LICENSE](LICENSE)
